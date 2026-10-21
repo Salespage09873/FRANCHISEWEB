@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Governança Financeira</title>
+<style>
+:root{--bg:#eceff0;--fg:#13222a;--mu:#617078;--card:#fff;--ln:#dde4e6;--ac:#0a6c74;--gh:#e3eef0;--ok:#0b8a4f;--bad:#c62f2f;--inp:#f3f8f9}
+@media(prefers-color-scheme:dark){:root{--bg:#0d1417;--fg:#e4eef0;--mu:#8aa0a7;--card:#141d21;--ln:#243238;--ac:#4fc3c9;--gh:#1a2a30;--ok:#4ade80;--bad:#f87171;--inp:#1a272c}}
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--fg)}
+header{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px solid var(--ln);display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;padding:10px 16px}
+.br{display:flex;gap:8px;align-items:center}.br b{font:700 18px ui-serif,Georgia,serif;color:var(--ac)}
+.br input{width:110px;border:1px solid var(--ln);background:var(--inp);color:inherit;border-radius:8px;padding:5px 8px;font:inherit}.br input.yr{width:70px}
+nav{display:flex;gap:4px;overflow-x:auto;flex:1}
+button,.bt{font:inherit;color:inherit;background:transparent;border:1px solid transparent;border-radius:8px;padding:6px 12px;cursor:pointer;white-space:nowrap}
+nav button:hover{background:var(--gh)}nav button.on{background:var(--ac);color:var(--card);font-weight:600}
+.ac button,.ac .bt{border-color:var(--ln)}.ac button:hover,.ac .bt:hover{background:var(--gh)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--ac)}
+main{padding:16px;max-width:1700px;margin:auto}
+.k{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:12px}
+.k div{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:14px}.k span{color:var(--mu);font-size:12px}.k b{display:block;font:600 24px ui-serif,Georgia,serif;margin-top:4px}
+.bars{display:flex;gap:8px;height:112px;margin-bottom:14px;background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:12px 14px 6px}
+.bars div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}
+.bars i{width:70%;max-width:36px;background:var(--ac);border-radius:6px 6px 0 0;min-height:2px;transition:height .35s}.bars i.n{background:var(--bad)}.bars span{font-size:11px;color:var(--mu)}
+.w{overflow:auto;max-height:calc(100vh - 170px);background:var(--card);border:1px solid var(--ln);border-radius:12px}
+table{border-collapse:separate;border-spacing:0;width:100%;min-width:1350px;font-variant-numeric:tabular-nums}
+th,td{padding:0;border-bottom:1px solid var(--ln);white-space:nowrap}
+thead th{position:sticky;top:0;background:var(--card);z-index:3;padding:9px 8px;text-align:right;font-size:12px;color:var(--mu)}
+thead th:first-child{left:0;z-index:4;text-align:left}
+tbody th{position:sticky;left:0;background:var(--card);z-index:2;text-align:left;font-weight:500;padding:6px 10px;min-width:270px;max-width:270px;overflow:hidden;text-overflow:ellipsis}
+td{text-align:right;min-width:92px}td.c{padding:6px 8px}
+td:last-child{font-weight:600;border-left:1px solid var(--ln)}
+td input{width:100%;border:0;background:transparent;color:inherit;text-align:right;padding:6px 8px;font:inherit;outline:0}
+td input:hover{background:var(--inp)}td input:focus{background:var(--inp);box-shadow:inset 0 0 0 2px var(--ac);border-radius:4px}
+.nm{width:210px;border:0;background:transparent;color:inherit;font:inherit;outline:0}.nm:focus{box-shadow:inset 0 -2px var(--ac)}
+.x{color:var(--mu);cursor:pointer;margin-left:6px;font-style:normal}.x:hover{color:var(--bad)}
+tr.t th,tr.t td{font-weight:700;background:var(--gh)}tr.h th,tr.h td{font-weight:600}
+tr.s th{padding-left:28px;color:var(--mu)}tr.s td{color:var(--mu)}
+tr.gh th,tr.gh td{background:var(--gh);font-weight:600;cursor:pointer}
+.closed tr.l{display:none}.add{color:var(--ac);padding:2px 6px;font-size:12px}
+.neg{color:var(--bad)}.ok{color:var(--ok);font-weight:600}.bad{color:var(--bad);font-weight:600}
+small{display:block;color:var(--mu);font-size:11px;font-weight:400}
+.hl{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.hl section{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:12px}.hl h3{margin:0 0 8px;font:600 16px ui-serif,Georgia,serif}
+.hl label{display:block;font-size:12px;color:var(--mu);margin-bottom:6px}.hl textarea{width:100%;margin-top:2px;border:1px solid var(--ln);border-left:4px solid var(--bad);border-radius:8px;background:var(--inp);color:var(--fg);padding:6px 8px;font:inherit;resize:vertical}
+.hl .gd textarea{border-left-color:var(--ok)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+ <div class="br"><b>Governança</b><input id="un" placeholder="Unidade" aria-label="Unidade"><input id="an" class="yr" type="number" aria-label="Ano"></div>
+ <nav id="nav"></nav>
+ <div class="ac"><button id="tgl">Recolher tudo</button> <button id="ex">Exportar</button> <label class="bt">Importar<input id="im" type="file" accept=".json" hidden></label> <button id="cl">Limpar</button></div>
+</header>
+<main id="app"></main>
+<script>
+const MO=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],KEY='gov2026',$=id=>document.getElementById(id);
+const N={
+rec:'Mensalidades Intensive|Mensalidades Flex 2|Mensalidades Flex 3|Mensalidade Kids|Mensalidade VIP|Mensalidade In Company|Mensalidades Espanhol|Mensalidades Conversação|Livros Callan|Livros Get It - Adulto|Livros Wise and Fun|Renegociação|Tradução|Trancamento|Brindes|Taxa de Matrícula|Carteirinha|Eventos|Outros',
+fix:'Conta de Energia|Conta de Água/Esgoto|Telefone Fixo/Internet|Celular Recepção|Celular Comercial|Contabilidade|Sponte|Aluguel|Condomínio|Lixo|IPTU',
+adm:'Papelaria|Supermercado|Informática (TI)|CDL|Monitoramento|Material de Limpeza/higiene|Informática/Impressoras|Cartório|Advogados e Ações|Certificado Digital|Seguro Predial|Projeto Decoração|Refeições|Credenciamento Callan|Outras despesas administrativas|Royalties|Presente colaboradores|Decoração|Devolução desistência',
+mkt:'Material de Mídia Geral|Marketing Digital|Outdoor/Propaganda|Taxa de Marketing|Funil de Vendas|Camisetas|Tapetes|Banners|Flyers|Manutenção Marca|Canecas/Copos|Patrocínio|Ações com Parceiros/Alunos|Campanhas Publicitárias|Brindes / Presentes|Plotagem|Cartão de Visita|Mídias Sociais|Serviços de MKT Digital|Rádio|Promoções|OpenAI ChatGPT|Facebook + Google',
+man:'Outros|Pintura|Jardineiro|Manutenção Predial|Manutenção Elétrica|Manutenção Hidráulica|Materiais de Manutenção|Dedetização/Limpeza da Caixa|Manutenção máquinas e equipamentos|Instalação/Manut. Ar Cond.|Manutenção Móveis e Utensílios|Manutenção Sistema de Segurança|Equipamentos|Bandeira',
+imp:'Alvará Prefeitura|Alvará Bombeiro|Alvará Sanitário|Taxa de Lixo|Taxas Extras|IPTU',
+via:'Combustível|IPVA + Licenciamento + DPVAT|Seguros Veículos|Manutenção veículos|Multas de Trânsito|Pedágios|Estacionamentos|Comida|Táxi/Uber|Passagens',
+ban:'Tarifas Diversas|Taxa Manutenção de Conta|Juros|IOF|Boletos|Abertura de Conta|Taxas Sponte|Taxas de Cartão (Stone)|Tarifa PIX|Tarifa Crédito',
+div:'Formatura dos Alunos|Correios|Halloween|Reunião dos Professores|Burger Day|Dia das Crianças|INSS Obra|Eventos|Arquiteto|Gincana crianças|Festa Junina|Cursos e Treinamentos|Carteirinha de Estudante|Aporte Franqueadora|Uniformes|Estornos|Páscoa|Repasse para escolas|Café, Chá, Copos e Água|Xerox/Encadernação',
+das:'DAS (Simples Nacional)|DARF|DARE|ISS',com:'Comissão Mensal|Premiação',
+fun:'Comercial|Gestor estratégico|Sócio Diretor|Auxiliar ADM|Auxiliar de Limpeza|Coordenação|Recepção',
+pro:'Teacher 01|Teacher 02|Teacher 03|Teacher 04|Teacher 05|Teacher 06|Teacher 07|Teacher 08|Teacher 09|Teacher 10',
+enc:'FGTS|1/12 Décimo Terceiro|1/12 Um Terço de Férias|1/12 Multa Rescisória (50% FGTS)|Sindicato|INSS',
+out:'Exames Médicos|Auxílio Alimentação|Auxílio Transporte|Outros|IRRF',
+imo:'Impressora|Notebook|Fachada|Ar Condicionado|Móveis|TV|Cadeiras|Celular|Câmeras|Micro-ondas / Frigobar',
+pqv:'Materiais de Cozinha|Materiais Elétricos|Placa de entrada|Mouse / teclado|Decoração|Quadros|Materiais Extras|Bandeira|Papel de Parede|Luminárias|Cafeteira|Garrafa Térmica|Capacho da Entrada|Material de Construção|Equipamentos|Reforma / Ampliação|Jardim|Cofre|Persiana|Outros',
+est:'Livros Get It Kids|Livros Get It Adults|Livros Espanhol|Livros Business|Livros Callan|Outros',
+ptx:'Taxa de Franquia|Reforma|Alvará Prefeitura|Alvará Bombeiro|Alvará Sanitário|Taxas Prefeitura|Taxa Contador/Abertura',
+pmk:'Material Didático|Material de Mídia Geral|Outdoor|Material de Escritório|Fachada|Quadros|Móveis|Impressora|Notebook|Papelaria|Camisetas|Banners|Cartões|Flyers|Correios|Adesivos|Certificados|Inauguração (bebidas/comidas)|Crachás|Brindes / Presentes',
+pma:'Pintura e Material|Material de Limpeza|Material de Cozinha|Materiais Elétricos|Materiais de Obra|Pedreiro|Equipe de limpeza|Eletricista|Jardim|Ar Condicionado + Instalação|Alarme + Instalação|Bebedouro|Calhas/PVC|Vidros|Portão|Segurança|Caçamba|Chaves|Extintor de Incêndio|Materiais Banheiro|Reforma (drywall)|Outros'};
+const G={rec:'Receitas',fix:'Despesas fixas',adm:'Administrativas variáveis',mkt:'Marketing',man:'Manutenção',imp:'Impostos e taxas municipais',via:'Viagens',ban:'Bancárias',div:'Diversas',das:'Impostos mensais (DAS etc.)',com:'Comissões',fun:'Funcionários',pro:'Professores',enc:'Encargos sociais compulsórios',out:'Outras despesas de pessoal',imo:'Imobilizado',pqv:'Bens de pequeno valor',est:'Estoques',ptx:'Taxas',pmk:'Marketing/Apoio',pma:'Manutenção/Obras'};
+const XK=['inat','tm','ta','des','frm','mat','aa','ap','lead','il','ic','tur','bon','bol','ativ0','saldo','fxJan'];
+let D,S,tab=location.hash.slice(1)||'dre',tm;
+
+/* ---------- estado ---------- */
+function init(o){D=o||{};D.l=D.l||{};for(const id in N)D.l[id]=D.l[id]||N[id].split('|').map(n=>({n,v:Array(12).fill('')}));
+D.x=D.x||{};XK.forEach(k=>D.x[k]=D.x[k]||Array(12).fill(''));D.x.mp=D.x.mp||Array(12).fill('30');D.x.mr=D.x.mr||Array(12).fill('25000');
+D.h=D.h||Array(48).fill('');D.u=D.u||'';D.a=D.a||'2026'}
+const save=()=>{clearTimeout(tm);tm=setTimeout(()=>localStorage.setItem(KEY,JSON.stringify(D)),300)};
+
+/* ---------- números ---------- */
+const nf=new Intl.NumberFormat('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}),n0=new Intl.NumberFormat('pt-BR',{maximumFractionDigits:2});
+const fmt=(v,f)=>!v||!isFinite(v)?'–':f=='%'?(v*100).toFixed(1).replace('.',',')+'%':f=='n'?n0.format(v):nf.format(v);
+const P=s=>{s=String(s==null?'':s).trim().replace(/^=/,'');if(!s)return 0;if(s.includes(','))s=s.replace(/\./g,'').replace(/,/g,'.');
+if(!/^[\d+\-*/().\s]+$/.test(s))return 0;try{const v=Function('return('+s+')')();return isFinite(v)?v:0}catch(e){return 0}};
+const disp=(v,f)=>v===''||v==null?'':fmt(P(v),f),esc=s=>String(s).replace(/[&<>"]/g,c=>'&#'+c.charCodeAt(0)+';');
+
+/* ---------- motor de cálculo (as fórmulas da planilha) ---------- */
+function calc(){S={};const x=D.x,sum=a=>a.reduce((p,q)=>p+q,0),X=(k,i)=>S[k][i],dv=(a,b)=>b?a/b:0,
+def=(k,f,a)=>{const r=[];for(let i=0;i<12;i++)r[i]=f(i);r[12]=a?f(12):sum(r);S[k]=r},
+add=(i,l)=>l.reduce((s,k)=>s+X('g'+k,i),0),r=(k,a,b)=>def(k,i=>dv(X(a,i),X(b,i)));
+for(const id in D.l){D.l[id].forEach((l,n)=>{const v=l.v.map(P);v[12]=sum(v);S['L'+id+'.'+n]=v});def('g'+id,i=>sum(D.l[id].map((_,n)=>X('L'+id+'.'+n,i))))}
+def('rec',i=>X('grec',i));
+def('mens',i=>sum([0,1,2,3,4,5,6,7].map(n=>X('Lrec.'+n,i))));def('livros',i=>X('Lrec.8',i)+X('Lrec.9',i));def('reneg',i=>X('Lrec.11',i));
+def('outras',i=>X('rec',i)-X('mens',i)-X('livros',i)-X('reneg',i));
+def('das',i=>X('gdas',i));def('com',i=>X('gcom',i));def('csp',i=>X('das',i)+X('com',i));
+def('pes',i=>add(i,['fun','pro','enc','out']));def('oper',i=>add(i,['fix','adm','mkt','man','imp','via','div']));
+def('desp',i=>X('pes',i)+X('oper',i)+X('gban',i));def('antes',i=>X('rec',i)-X('csp',i));
+def('marg',i=>X('rec',i)-add(i,['adm','mkt','man','imp','via','div','ban']));r('idx','marg','rec');
+def('res',i=>X('antes',i)-X('desp',i));def('luc',i=>dv(X('res',i),X('rec',i)),1);
+def('pre',i=>add(i,['ptx','pmk','pma']));def('invs',i=>add(i,['imo','pqv','est']));def('inv',i=>X('pre',i)+X('invs',i));
+def('lap',i=>X('res',i)-X('inv',i));def('lpct',i=>dv(X('lap',i),X('rec',i)),1);
+def('idx',i=>dv(X('marg',i),X('rec',i)),1);def('pe',i=>dv(X('desp',i),X('idx',i)),1);
+def('xmp',i=>i<12?P(x.mp[i]):sum(x.mp.map(P))/12,1);def('xmr',i=>P(x.mr[i]));
+def('pee',i=>dv(X('desp',i),X('idx',i)-X('xmp',i)/100),1);def('lp',i=>X('pee',i)*X('xmp',i)/100,1);
+def('per',i=>dv(X('desp',i)+X('xmr',i),X('idx',i)),1);def('lpp',i=>dv(X('xmr',i),X('per',i)),1);
+def('dtot',i=>X('gfix',i)+add(i,['adm','mkt','man','imp','via','ban','div'])+X('csp',i));
+def('teto',i=>X('rec',i)*.3);def('sd',i=>X('teto',i)-X('dtot',i));def('idp',i=>dv(X('dtot',i),X('rec',i)),1);
+def('teto4',i=>X('rec',i)*.4);def('sd4',i=>X('teto4',i)-X('pes',i));def('ipe',i=>dv(X('pes',i),X('rec',i)),1);
+/* fluxo de caixa: mensalidades entram com 1 mês de defasagem */
+def('fm',i=>i?X('mens',i-1):P(x.fxJan[0]));def('fl',i=>X('livros',i));def('fr',i=>X('reneg',i));def('fo',i=>X('outras',i));
+def('frec',i=>X('fm',i)+X('fl',i)+X('fr',i)+X('fo',i));
+def('ftrab',i=>X('pes',i));def('foper',i=>X('oper',i));def('fcsp',i=>X('csp',i));def('ffin',i=>X('gban',i));
+def('fdesp',i=>X('ftrab',i)+X('foper',i)+X('fcsp',i)+X('ffin',i));def('finv',i=>X('invs',i));
+S.fsi=[];S.fsf=[];for(let i=0;i<12;i++){S.fsi[i]=i?S.fsf[i-1]:P(x.saldo[0]);S.fsf[i]=S.fsi[i]+X('frec',i)-X('fdesp',i)-X('finv',i)}S.fsi[12]=S.fsi[0];S.fsf[12]=S.fsf[11];
+/* indicadores */
+['inat','tm','ta','des','frm','mat','aa','ap','lead','il','ic','tur','bon','bol'].forEach(k=>def('x'+k,i=>P(x[k][i])));
+S.ativ=[];for(let i=0;i<12;i++)S.ativ[i]=i?S.ativ[i-1]+X('xmat',i)-X('xinat',i):P(x.ativ0[0]);S.ativ[12]=S.ativ[11];
+r('pdes','xdes','ativ');r('pfrm','xfrm','ativ');r('pmat','xmat','ativ');r('paa','xaa','ativ');r('pap','xap','ativ');r('plead','xlead','ativ');
+r('custo','dtot','rec');r('pessf','pes','rec');def('livc',i=>X('gest',i));def('livv',i=>X('livros',i));r('razao','livv','livc');
+r('ticket','rec','ativ');r('pil','xil','ativ');r('pic','xic','ativ');r('mturma','ativ','xtur');r('pbol','xbol','ativ')}
+
+/* ---------- layout das abas ---------- */
+const c=(k,l,f='$',s='',t)=>({k,l,f,s,t}),i=(k,l,f='$',one)=>({i:k,l,f,one}),g=id=>({g:id});
+const SH={
+dre:[c('rec','(+) Receita','$','t'),c('csp','(−) Custo dos serviços prestados','$','h'),c('das','Impostos mensais (DAS etc.)','$','s'),c('com','Comissões','$','s'),
+c('antes','RESULTADO ANTES DAS DESPESAS','$','t'),c('marg','Margem de contribuição bruta'),c('idx','Índice de margem de contribuição','%'),
+c('desp','(−) Despesas','$','h'),c('pes','Despesas trabalhistas','$','h'),c('gfun','Funcionários','$','s'),c('gpro','Professores','$','s'),c('gout','Outras despesas com pessoal','$','s'),c('genc','Encargos sociais','$','s'),
+c('oper','Despesas operacionais','$','h'),c('gfix','Fixas','$','s'),c('gadm','Administrativas','$','s'),c('gmkt','Marketing','$','s'),c('gman','Manutenção','$','s'),c('gimp','Impostos e taxas municipais','$','s'),c('gvia','Viagens','$','s'),c('gdiv','Diversas','$','s'),
+c('gban','Despesas financeiras (bancárias)','$','h'),c('res','RESULTADO DO PERÍODO','$','t'),c('luc','Lucratividade do período','%','',['>',.3,'> 30%']),
+c('inv','(−) Investimentos','$','h'),c('pre','Despesas pré-operacionais','$','s'),c('invs','Investimentos','$','s'),c('lap','LUCRO APÓS INVESTIMENTOS','$','t'),c('lpct','Lucro %','%'),
+c('pe','PONTO DE EQUILÍBRIO OPERACIONAL','$','t'),i('mp','Lucro desejado (%)','n'),c('pee','Ponto de equilíbrio econômico (lucro %)'),c('lp','Lucro líquido projetado'),
+i('mr','Lucro desejado (R$)'),c('per','Ponto de equilíbrio econômico (lucro R$)'),c('lpp','Lucro líquido projetado %','%')],
+rec:[c('rec','RECEITAS TOTAIS','$','t'),g('rec')],
+desp:[c('teto','30% da receita'),c('sd','30% − despesas'),c('dtot','DESPESAS TOTAIS (fixas + variáveis + CSP)','$','t'),c('idp','Impacto sobre o faturamento bruto','%'),
+g('fix'),g('adm'),g('mkt'),g('man'),g('imp'),g('via'),g('ban'),g('div'),g('das'),g('com')],
+pes:[c('teto4','40% da receita'),c('sd4','40% − despesa'),c('pes','DESPESAS COM PESSOAL','$','t'),c('ipe','Impacto sobre o faturamento bruto','%'),g('fun'),g('pro'),g('enc'),g('out')],
+inv:[c('invs','INVESTIMENTOS','$','t'),g('imo'),g('pqv'),g('est')],
+pre:[c('pre','INVESTIMENTO INICIAL TOTAL','$','t'),g('ptx'),g('pmk'),g('pma')],
+fx:[i('saldo','Saldo inicial de janeiro','$',1),i('fxJan','Mensalidades recebidas em janeiro (ref. mês anterior)','$',1),c('fsi','SALDO INICIAL','$','h'),
+c('frec','(+) RECEITA','$','t'),c('fm','Mensalidades (recebidas 1 mês depois)','$','s'),c('fl','Livros','$','s'),c('fr','Renegociação','$','s'),c('fo','Outras receitas','$','s'),
+c('fdesp','(−) DESPESAS','$','t'),c('ftrab','Pessoal','$','s'),c('foper','Operacionais','$','s'),c('fcsp','Impostos mensais e comissões','$','s'),c('ffin','Bancárias','$','s'),
+c('finv','(−) INVESTIMENTOS','$','t'),c('fsf','SALDO FINAL DO PERÍODO','$','t')],
+ind:[i('ativ0','Alunos ativos — base de janeiro','n',1),c('ativ','Número de alunos ativos','n','t'),
+i('inat','Alunos inativos','n'),i('tm','Trancamentos do mês','n'),i('ta','Trancamentos ativos','n'),i('des','Alunos desistentes','n'),c('pdes','Desistência / ativos','%','s',['<',.05,'< 5%']),
+i('frm','Alunos formados','n'),c('pfrm','Formados / ativos','%','s',['<',.01,'< 1%']),i('mat','Matrículas efetivas','n'),c('pmat','Matrículas / ativos','%','s',['>',.05,'> 5%']),
+i('aa','Atendimentos ativos','n'),c('paa','Atend. ativos / ativos','%','s',['>',.1,'> 10%']),i('ap','Atendimentos passivos','n'),c('pap','Atend. passivos / ativos','%','s',['>',.5,'> 50%']),
+i('lead','Leads','n'),c('plead','Leads / ativos','%','s',['>',.5,'> 50%']),
+c('rec','Faturamento bruto','$','t'),c('luc','Lucratividade','%','',['>',.3,'> 30%']),c('custo','Custo / faturamento bruto','%','',['<',.3,'< 30%']),c('pessf','Pessoal / faturamento bruto','%','',['<',.4,'< 40%']),
+c('livc','Livros comprados (R$)'),c('livv','Livros vendidos (R$)'),c('razao','Vendidos / comprados','%','',['>',1,'> 100%']),c('ticket','Ticket médio','$','',['>',300,'> R$ 300']),
+i('il','Inadimplentes (last day)','n'),c('pil','Inadimplência last day','%','s',['<',.1,'< 10%']),i('ic','Inadimplentes (current)','n'),c('pic','Inadimplência current','%','s',['<',.05,'< 5%']),
+i('tur','Turmas ativas','n'),c('mturma','Média de alunos por turma','d','',['>',6,'> 6']),i('bon','Livros bonificados','n'),i('bol','Bolsistas / permutas','n'),c('pbol','Bolsistas / ativos','%','s')]};
+const TABS=[['dre','DRE'],['rec','Receitas'],['desp','Despesas'],['pes','Pessoal'],['inv','Investimentos'],['pre','Pré-operacionais'],['fx','Fluxo de Caixa'],['ind','Indicadores'],['hl','Highlights']];
+
+/* ---------- render ---------- */
+const cell=(k,m,f,x='')=>`<td class="c" data-k="${k}" data-m="${m}" data-f="${f}"${x}></td>`;
+const cr=(r,T)=>`<tr class="${r.s}"><th>${r.l}${r.t?`<small>meta ${r.t[2]}</small>`:''}</th>${MO.map((_,m)=>cell(r.k,m,r.f,r.t?` data-o="${r.t[0]}" data-v="${r.t[1]}"`:'')).join('')}${T?cell(r.k,12,r.f):''}</tr>`;
+const ir=(r,T)=>`<tr><th>${r.l}</th>${MO.map((_,m)=>r.one&&m?'<td></td>':`<td><input class="v" data-x="${r.i}" data-m="${m}" data-f="${r.f}" value="${disp(D.x[r.i][m],r.f)}"></td>`).join('')}${T?(r.one?'<td></td>':cell('x'+r.i,12,r.f)):''}</tr>`;
+function GR(id){const L=D.l[id],open=L.length<=13||L.some(l=>l.v.some(v=>v!==''));
+return `<tbody data-g="${id}" class="${open?'':'closed'}"><tr class="gh"><th>${G[id]}</th>${[...Array(13).keys()].map(m=>cell('g'+id,m,'$')).join('')}</tr>`+
+L.map((l,n)=>`<tr class="l"><th><input class="nm" data-g="${id}" data-n="${n}" value="${esc(l.n)}">${id=='rec'?'':`<i class="x" data-del="${id}.${n}" title="Remover linha">×</i>`}</th>${l.v.map((v,m)=>`<td><input class="v" data-g="${id}" data-n="${n}" data-m="${m}" data-f="$" value="${disp(v,'$')}"></td>`).join('')}${cell('L'+id+'.'+n,12,'$')}</tr>`).join('')+
+`<tr class="l"><th><button class="add" data-add="${id}">+ nova linha</button></th><td colspan="13"></td></tr></tbody>`}
+const HL=()=>'<div class="hl">'+MO.map((m,j)=>`<section><h3>${m}</h3>`+['Ocorrência ruim 1','Ocorrência ruim 2','Ocorrência boa 1','Ocorrência boa 2'].map((t,q)=>`<label class="${q<2?'':'gd'}">${t}<textarea rows="2" data-h="${j*4+q}">${esc(D.h[j*4+q])}</textarea></label>`).join('')+'</section>').join('')+'</div>';
+function render(){
+ $('nav').innerHTML=TABS.map(([k,l])=>`<button data-t="${k}" class="${k==tab?'on':''}">${l}</button>`).join('');
+ $('un').value=D.u;$('an').value=D.a;document.title='Governança '+D.a+(D.u?' – '+D.u:'');
+ $('tgl').style.display=['dre','fx','ind','hl'].includes(tab)?'none':'';
+ if(tab=='hl'){$('app').innerHTML=HL();return}
+ const T=tab!='ind',ttl=TABS.find(t=>t[0]==tab)[1];
+ let h=tab=='dre'?'<div class="k">'+[['Receita','rec','$'],['Resultado do período','res','$'],['Lucratividade','luc','%'],['Lucro após investimentos','lap','$']].map(([l,k,f])=>`<div><span>${l}</span><b data-k="${k}" data-m="12" data-f="${f}"></b></div>`).join('')+'</div><div class="bars" id="bars" title="Resultado do período por mês">'+MO.map(m=>`<div><i></i><span>${m}</span></div>`).join('')+'</div>':'';
+ h+=`<div class="w"><table><thead><tr><th>${ttl} ${D.a}</th>${MO.map(m=>`<th>${m}/${String(D.a).slice(-2)}</th>`).join('')}${T?'<th>Total</th>':''}</tr></thead>`+
+ SH[tab].map(r=>r.g?GR(r.g):'<tbody>'+(r.k?cr(r,T):ir(r,T))+'</tbody>').join('')+'</table></div>';
+ $('app').innerHTML=h;update()}
+function bars(){const b=$('bars');if(!b)return;const v=S.res.slice(0,12),mx=Math.max(...v.map(Math.abs),1);
+ b.querySelectorAll('i').forEach((e,j)=>{e.style.height=Math.abs(v[j])/mx*70+'px';e.classList.toggle('n',v[j]<0);e.title=MO[j]+': '+fmt(v[j],'$')})}
+function update(){calc();document.querySelectorAll('[data-k]').forEach(e=>{const v=S[e.dataset.k][+e.dataset.m]||0;e.textContent=fmt(v,e.dataset.f);e.classList.toggle('neg',v<0);
+ const o=e.dataset.o;if(o){const m=+e.dataset.m,on=m<12&&S.rec[m]>0,ok=o=='>'?v>+e.dataset.v:v<+e.dataset.v;e.classList.toggle('ok',on&&ok);e.classList.toggle('bad',on&&!ok)}});bars();save()}
+
+/* ---------- eventos ---------- */
+const getRaw=t=>t.dataset.g?D.l[t.dataset.g][+t.dataset.n].v[+t.dataset.m]:D.x[t.dataset.x][+t.dataset.m];
+const setRaw=(t,v)=>{if(t.dataset.g)D.l[t.dataset.g][+t.dataset.n].v[+t.dataset.m]=v;else D.x[t.dataset.x][+t.dataset.m]=v};
+document.addEventListener('input',e=>{const t=e.target;
+ if(t.dataset.h!=null){D.h[+t.dataset.h]=t.value;save()}
+ else if(t.classList.contains('nm')){D.l[t.dataset.g][+t.dataset.n].n=t.value;save()}
+ else if(t.classList.contains('v')){setRaw(t,t.value);update()}});
+document.addEventListener('focusin',e=>{const t=e.target;if(t.classList.contains('v')){t.value=getRaw(t);t.select()}});
+document.addEventListener('focusout',e=>{const t=e.target;if(t.classList.contains('v'))t.value=disp(getRaw(t),t.dataset.f)});
+document.addEventListener('keydown',e=>{const t=e.target;if(!t.classList||!t.classList.contains('v')||!['Enter','ArrowDown','ArrowUp'].includes(e.key))return;
+ e.preventDefault();const l=[...t.closest('table').querySelectorAll(`input.v[data-m="${t.dataset.m}"]`)].filter(n=>n.offsetParent),j=l.indexOf(t)+(e.key=='ArrowUp'?-1:1);if(l[j])l[j].focus()});
+document.addEventListener('click',e=>{const t=e.target;
+ if(t.dataset.t){tab=t.dataset.t;location.hash=tab;render();return}
+ if(t.dataset.add){const n=prompt('Nome da nova linha:');if(n){D.l[t.dataset.add].push({n,v:Array(12).fill('')});render()}return}
+ if(t.dataset.del){const[id,n]=t.dataset.del.split('.');if(confirm('Remover "'+D.l[id][+n].n+'"?')){D.l[id].splice(+n,1);render()}return}
+ const gh=t.closest('.gh');if(gh)gh.parentElement.classList.toggle('closed')});
+$('tgl').onclick=()=>{const a=[...document.querySelectorAll('tbody[data-g]')],o=a.some(b=>!b.classList.contains('closed'));a.forEach(b=>b.classList.toggle('closed',o));$('tgl').textContent=o?'Expandir tudo':'Recolher tudo'};
+$('un').oninput=e=>{D.u=e.target.value;document.title='Governança '+D.a+(D.u?' – '+D.u:'');save()};
+$('an').onchange=e=>{D.a=e.target.value||'2026';render()};
+$('ex').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(D)],{type:'application/json'}));a.download='governanca-'+D.a+'.json';a.click()};
+$('im').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{init(JSON.parse(r.result));render()}catch(x){alert('Arquivo inválido.')}};r.readAsText(f);e.target.value=''};
+$('cl').onclick=()=>{if(confirm('Apagar todos os dados deste navegador?')){localStorage.removeItem(KEY);init();render()}};
+window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(h!=tab&&SH[h]||h=='hl'){tab=h;render()}});
+
+let saved=null;try{saved=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+init(saved);if(!SH[tab]&&tab!='hl')tab='dre';render();
+</script>
+</body>
+</html>

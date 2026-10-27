@@ -81,17 +81,34 @@ nav{order:3;flex:1 1 100%}.ac{margin-left:auto}
 nav button.on:hover{background:var(--navy);color:#fff}
 .br input.yr{width:88px}
 .nm.sm{width:150px}
+[hidden]{display:none!important}
+#lg{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:var(--bg);padding:16px}
+#lgf{width:min(380px,100%);background:#fff;border:1px solid var(--ln);border-top:5px solid var(--lime);border-radius:16px;padding:28px;box-shadow:0 12px 40px rgba(32,59,104,.14)}
+#lgf img{display:block;width:160px;margin:0 auto 8px}#lgf b{display:block;text-align:center;font:700 28px ui-serif,Georgia,serif;color:var(--purple)}
+#lgf h1{font:600 17px ui-serif,Georgia,serif;text-align:center;margin:6px 0 10px;color:var(--navy)}
+#lgf label{display:block;font-size:12px;color:var(--mu);margin-top:12px}
+#lgf input{width:100%;margin-top:4px;padding:10px 12px;border:1px solid var(--ln);border-radius:10px;background:var(--inp);color:var(--fg);font:inherit}
+#lgf button{width:100%;margin-top:18px;padding:11px;border-radius:10px;background:var(--navy);color:#fff;border-color:var(--navy);font-weight:600}
+#lgf button:hover{filter:brightness(1.2)}
+#lgm{min-height:20px;margin-top:10px;font-size:13px;color:var(--bad);text-align:center}
+#who{font-size:13px;color:var(--navy);font-weight:600;margin-right:6px}#st{font-size:12px;color:var(--mu);margin-right:6px}
+.vw{display:flex;gap:12px;align-items:center;justify-content:space-between;background:#fff6e5;border:1px solid var(--orange);border-radius:12px;padding:10px 14px;margin-bottom:12px}
+body.ro .x,body.ro .add:not([data-open]){display:none}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
-<header>
+<div id="lg"><form id="lgf"><img src="logo.png" alt="Get It" onerror="this.onerror=null;this.outerHTML='<b>Get It</b>'"><h1>Governança Financeira</h1>
+<label>E-mail<input id="lge" type="email" required autocomplete="username"></label>
+<label>Senha<input id="lgp" type="password" required autocomplete="current-password"></label>
+<button type="submit">Entrar</button><div id="lgm" role="alert"></div></form></div>
+<header id="hd" hidden>
  <div class="br"><img class="brand-logo" src="logo.png" alt="Get It" onerror="this.onerror=null;this.outerHTML='<b>Get It</b>'"><b>Governança</b><input id="un" placeholder="Unidade" aria-label="Unidade"><input id="an" class="yr" type="number" aria-label="Ano"></div>
  <nav id="nav"></nav>
- <div class="ac"><button id="tgl">Recolher tudo</button> <button id="ex">Exportar</button> <label class="bt">Importar<input id="im" type="file" accept=".json" hidden></label> <button id="cl">Limpar</button> <button id="od" title="Salvar backup no OneDrive">OneDrive</button> <button id="odr">Restaurar</button><span id="ods"></span></div>
+ <div class="ac"><span id="who"></span><span id="st"></span> <button id="tgl">Recolher tudo</button> <button id="ex">Exportar</button> <label class="bt">Importar<input id="im" type="file" accept=".json" hidden></label> <button id="cl">Limpar</button> <button id="pw">Trocar senha</button> <button id="out">Sair</button></div>
 </header>
-<main id="app"></main>
+<main id="app" hidden></main>
 <script>
 const MO=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],KEY='gov2026',$=id=>document.getElementById(id);
 const N={
@@ -118,9 +135,10 @@ pmk:"Material Didático|Material de Mídia Geral|Outdoor|Material de Escritório
 pma:"Pintura e Material|Material de Limpeza|Material de Cozinha|Materiais Elétricos|Materiais de Obra|Pedreiro|Equipe de limpeza|Eletricista|Jardim|Ar Condicionado + Instalação|Alarme + Instalação|Bebedouro|Calhas/PVC|Vidros|Portão|Segurança|Caçamba|Chaves|Extintor de Incêndio|Materiais Banheiro|Reforma (drywall)|Outros"};
 const G={rec:'Receitas',fix:'Despesas fixas',adm:'Administrativas variáveis',mkt:'Marketing',man:'Manutenção',imp:'Impostos e taxas municipais',via:'Viagens',ban:'Bancárias',div:'Diversas',das:'Impostos mensais (DAS etc.)',com:'Comissões',fun:'Funcionários CLT',pro:'Professores CLT',enc:'Encargos sociais compulsórios',out:'Outras despesas de pessoal',imo:'Imobilizado',pqv:'Bens de pequeno valor',est:'Estoques',ptx:'Taxas',pmk:'Marketing/Apoio',pma:'Manutenção/Obras'};
 const XK=['inat','tm','ta','des','frm','mat','aa','ap','lead','il','ic','tur','bon','bol','ativ0','saldo','fxJan'];
-const ROY=.06,OD_ID='',ODP='Governanca';/* ROY = % de royalties | OD_ID = Client ID do app no Azure (backup OneDrive) */
+const ROY=.06,API_URL='';
+/* ROY = % de royalties | API_URL = endereço do app da web do Google Apps Script (termina em /exec) */
 const AUTO=(id,n)=>{n=n.trim();return id=='adm'&&/^royalt/i.test(n)?'roy':id=='enc'?(/d[eé]cimo/i.test(n)?'dec':/f[eé]rias/i.test(n)?'fer':/multa/i.test(n)?'mul':''):''};
-let D,S,tab=location.hash.slice(1)||'dre',tm;
+let ME,VIEW=null,RO=false,dirty=false,TOK=sessionStorage.getItem('gov_tok'),sv=0,again=false,D,S,tab=location.hash.slice(1)||'dre',tm;
 
 /* ---------- estado ---------- */
 function init(o){D=o||{};D.l=D.l||{};for(const id in N)D.l[id]=D.l[id]||N[id].split('|').map(n=>({n,v:Array(12).fill('')}));
@@ -128,7 +146,11 @@ D.x=D.x||{};XK.forEach(k=>D.x[k]=D.x[k]||Array(12).fill(''));D.x.mp=D.x.mp||Arra
 D.h=D.h||Array(48).fill('');D.u=D.u||'';D.a=D.a||'2026';
  D.l.rec=D.l.rec.filter(l=>!((/callan/i.test(l.n)||!l.n.trim())&&l.v.every(v=>v==='')));
  D.l.rec.forEach(l=>{if(/wise and fun|^livros get it\s*-\s*kids$/i.test(l.n.trim()))l.n='Livros Get It - Kids'})}
-const save=()=>{clearTimeout(tm);tm=setTimeout(()=>{localStorage.setItem(KEY,JSON.stringify(D));if(localStorage.getItem('gov_od'))odSoon()},300)};
+const save=()=>{if(RO||!ME)return;dirty=true;$('st').textContent='salvando…';clearTimeout(tm);tm=setTimeout(flush,1200)};
+async function flush(){if(sv){again=true;return}sv=1;
+ do{again=false;const r=await api('save',{conteudo:D,resumo:{rec:S.rec[12],res:S.res[12],luc:S.luc[12],lap:S.lap[12]}});
+  dirty=!r.ok||again;$('st').textContent=r.ok?'✓ salvo às '+hora():'⚠ não salvou: '+(r.erro||'verifique a conexão')}while(again);sv=0}
+window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue=''}});
 
 /* ---------- números ---------- */
 const nf=new Intl.NumberFormat('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}),n0=new Intl.NumberFormat('pt-BR',{maximumFractionDigits:2});
@@ -218,7 +240,7 @@ return `<tbody data-g="${id}" class="${open?'':'closed'}"><tr class="gh"><th>${G
 L.map((l,n)=>{const au=AUTO(id,l.n),k='L'+id+'.'+n;return `<tr class="l"><th><input class="nm${au?' sm':''}" data-g="${id}" data-n="${n}" value="${esc(l.n)}" title="${esc(l.n)}">${au?'<em class="au" title="Calculado automaticamente">auto</em>':''}<i class="x" data-del="${id}.${n}" title="Remover linha">×</i></th>${au?MO.map((_,m)=>cell(k,m,'$')).join(''):l.v.map((v,m)=>`<td><input class="v" data-g="${id}" data-n="${n}" data-m="${m}" data-f="$" value="${disp(v,'$')}"></td>`).join('')}${cell(k,12,'$')}</tr>`}).join('')+
 `<tr class="l"><th><button class="add" data-add="${id}">+ nova linha</button></th><td colspan="13"></td></tr></tbody>`}
 const HL=()=>'<div class="hl">'+MO.map((m,j)=>`<section><h3>${m}</h3>`+['Ocorrência ruim 1','Ocorrência ruim 2','Ocorrência boa 1','Ocorrência boa 2'].map((t,q)=>`<label class="${q<2?'':'gd'}">${t}<textarea rows="2" data-h="${j*4+q}">${esc(D.h[j*4+q])}</textarea></label>`).join('')+'</section>').join('')+'</div>';
-function render(){
+function renderMain(){
  $('nav').innerHTML=TABS.map(([k,l])=>`<button data-t="${k}" class="${k==tab?'on':''}">${l}</button>`).join('');
  $('un').value=D.u;$('an').value=D.a;document.title='Governança '+D.a+(D.u?' – '+D.u:'');
  $('tgl').style.display=['dre','fx','ind','hl'].includes(tab)?'none':'';
@@ -227,11 +249,11 @@ function render(){
  let h=tab=='dre'?'<div class="k">'+[['Receita','rec','$'],['Resultado do período','res','$'],['Lucratividade','luc','%'],['Lucro após investimentos','lap','$']].map(([l,k,f])=>`<div><span>${l}</span><b data-k="${k}" data-m="12" data-f="${f}"></b></div>`).join('')+'</div><div class="bars" id="bars" title="Resultado do período por mês">'+MO.map(m=>`<div><i></i><span>${m}</span></div>`).join('')+'</div>':'';
  h+=`<div class="w"><table><thead><tr><th>${ttl} ${D.a}</th>${MO.map(m=>`<th>${m}/${String(D.a).slice(-2)}</th>`).join('')}${T?'<th>Total</th>':''}</tr></thead>`+
  SH[tab].map(r=>r.g?GR(r.g):'<tbody>'+(r.k?cr(r,T):ir(r,T))+'</tbody>').join('')+'</table></div>';
- $('app').innerHTML=h;update()}
+ $('app').innerHTML=h;update(1)}
 function bars(){const b=$('bars');if(!b)return;const v=S.res.slice(0,12),mx=Math.max(...v.map(Math.abs),1);
  b.querySelectorAll('i').forEach((e,j)=>{e.style.height=Math.abs(v[j])/mx*70+'px';e.classList.toggle('n',v[j]<0);e.title=MO[j]+': '+fmt(v[j],'$')})}
-function update(){calc();document.querySelectorAll('[data-k]').forEach(e=>{const v=S[e.dataset.k][+e.dataset.m]||0;e.textContent=fmt(v,e.dataset.f);e.classList.toggle('neg',v<0);
- const o=e.dataset.o;if(o){const m=+e.dataset.m,on=m<12&&S.rec[m]>0,ok=o=='>'?v>+e.dataset.v:v<+e.dataset.v;e.classList.toggle('ok',on&&ok);e.classList.toggle('bad',on&&!ok)}});bars();save()}
+function update(ns){calc();document.querySelectorAll('[data-k]').forEach(e=>{const v=S[e.dataset.k][+e.dataset.m]||0;e.textContent=fmt(v,e.dataset.f);e.classList.toggle('neg',v<0);
+ const o=e.dataset.o;if(o){const m=+e.dataset.m,on=m<12&&S.rec[m]>0,ok=o=='>'?v>+e.dataset.v:v<+e.dataset.v;e.classList.toggle('ok',on&&ok);e.classList.toggle('bad',on&&!ok)}});bars();if(!ns)save()}
 
 /* ---------- eventos ---------- */
 const getRaw=t=>t.dataset.g?D.l[t.dataset.g][+t.dataset.n].v[+t.dataset.m]:D.x[t.dataset.x][+t.dataset.m];
@@ -246,40 +268,69 @@ document.addEventListener('focusout',e=>{const t=e.target;if(t.classList.contain
 document.addEventListener('keydown',e=>{const t=e.target;if(!t.classList||!t.classList.contains('v')||!['Enter','ArrowDown','ArrowUp'].includes(e.key))return;
  e.preventDefault();const l=[...t.closest('table').querySelectorAll(`input.v[data-m="${t.dataset.m}"]`)].filter(n=>n.offsetParent),j=l.indexOf(t)+(e.key=='ArrowUp'?-1:1);if(l[j])l[j].focus()});
 document.addEventListener('click',e=>{const t=e.target;
+ if(t.dataset.open){openFr(t.dataset.open,t.dataset.nm);return}
+ if(t.dataset.back!=null){backMine();return}
  if(t.dataset.t){tab=t.dataset.t;location.hash=tab;render();return}
- if(t.dataset.add){const n=prompt('Nome da nova linha:');if(n){D.l[t.dataset.add].push({n,v:Array(12).fill('')});render()}return}
- if(t.dataset.del){const[id,n]=t.dataset.del.split('.');if(confirm('Remover "'+D.l[id][+n].n+'"?')){D.l[id].splice(+n,1);render()}return}
+ if(t.dataset.add){if(RO)return;const n=prompt('Nome da nova linha:');if(n){D.l[t.dataset.add].push({n,v:Array(12).fill('')});render();save()}return}
+ if(t.dataset.del){const[id,n]=t.dataset.del.split('.');if(RO)return;if(confirm('Remover "'+D.l[id][+n].n+'"?')){D.l[id].splice(+n,1);render();save()}return}
  const gh=t.closest('.gh');if(gh)gh.parentElement.classList.toggle('closed')});
 $('tgl').onclick=()=>{const a=[...document.querySelectorAll('tbody[data-g]')],o=a.some(b=>!b.classList.contains('closed'));a.forEach(b=>b.classList.toggle('closed',o));$('tgl').textContent=o?'Expandir tudo':'Recolher tudo'};
 $('un').oninput=e=>{D.u=e.target.value;document.title='Governança '+D.a+(D.u?' – '+D.u:'');save()};
-$('an').onchange=e=>{D.a=e.target.value||'2026';render()};
+$('an').onchange=e=>{if(RO)return;D.a=e.target.value||'2026';render();save()};
 $('ex').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(D)],{type:'application/json'}));a.download='governanca-'+D.a+'.json';a.click()};
-$('im').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{init(JSON.parse(r.result));render()}catch(x){alert('Arquivo inválido.')}};r.readAsText(f);e.target.value=''};
-$('cl').onclick=()=>{if(confirm('Apagar todos os dados deste navegador?')){localStorage.removeItem(KEY);init();render()}};
-window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(h!=tab&&SH[h]||h=='hl'){tab=h;render()}});
+$('im').onchange=e=>{const f=e.target.files[0];if(!f)return;if(RO){e.target.value='';return alert('Modo somente leitura.')}const r=new FileReader();r.onload=()=>{try{init(JSON.parse(r.result));render();save()}catch(x){alert('Arquivo inválido.')}};r.readAsText(f);e.target.value=''};
+$('cl').onclick=()=>{if(RO)return alert('Modo somente leitura.');if(confirm('Apagar TODOS os dados desta franquia? Isso não pode ser desfeito.')){init();render();save()}};
+window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(ME&&h!=tab&&(SH[h]||h=='hl'||h=='adm'&&ME.role=='admin')){tab=h;render()}});
 
-/* ---------- backup OneDrive (Microsoft Graph) ---------- */
-const loadMsal=()=>window.msal?Promise.resolve():new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://alcdn.msauth.net/browser/2.38.3/js/msal-browser.min.js';s.onload=ok;s.onerror=()=>no(Error('Não foi possível carregar o login da Microsoft.'));document.head.appendChild(s)});
-let odApp,odT;
-async function odTok(inter){
- if(!OD_ID)throw Error('Falta configurar o OD_ID no código (Application/Client ID do app registrado no Azure).');
- await loadMsal();
- if(!odApp){odApp=new msal.PublicClientApplication({auth:{clientId:OD_ID,authority:'https://login.microsoftonline.com/common',redirectUri:location.origin+location.pathname.replace(/index\.html$/,'')},cache:{cacheLocation:'localStorage'}});if(odApp.initialize)await odApp.initialize()}
- const sc=['Files.ReadWrite'],q=()=>({scopes:sc,account:odApp.getAllAccounts()[0]});
- try{return(await odApp.acquireTokenSilent(q())).accessToken}catch(e){if(!inter)throw e;await odApp.loginPopup({scopes:sc});return(await odApp.acquireTokenSilent(q())).accessToken}}
-const odUrl=()=>'https://graph.microsoft.com/v1.0/me/drive/root:/'+ODP+'/governanca-'+D.a+'.json:/content',odSt=t=>$('ods').textContent=t;
-async function odUp(inter){try{const t=await odTok(inter),r=await fetch(odUrl(),{method:'PUT',headers:{Authorization:'Bearer '+t,'Content-Type':'application/json'},body:JSON.stringify(D)});
- if(!r.ok)throw Error('OneDrive respondeu '+r.status);localStorage.setItem('gov_od','1');odSt('☁ backup às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}))}
- catch(e){odSt('☁ backup pendente (clique em OneDrive)');if(inter)alert(e.message)}}
-const odSoon=()=>{clearTimeout(odT);odT=setTimeout(()=>odUp(false),20000)};
-$('od').onclick=()=>odUp(true);
-$('odr').onclick=async()=>{try{const t=await odTok(true),r=await fetch(odUrl(),{headers:{Authorization:'Bearer '+t}});
- if(!r.ok)throw Error(r.status==404?'Nenhum backup encontrado no OneDrive.':'OneDrive respondeu '+r.status);
- if(confirm('Substituir os dados atuais pelo backup do OneDrive?')){init(await r.json());save();render()}}catch(e){alert(e.message)}};
-if(localStorage.getItem('gov_od'))odSt('☁ backup automático ativo');
+/* ---------- login, perfis e painel do administrador (servidor = Apps Script + planilha do Google) ---------- */
+async function api(a,p={}){
+ if(!API_URL)return{ok:false,erro:'Configure API_URL no início do script.'};
+ try{const r=await fetch(API_URL,{method:'POST',body:JSON.stringify({a,t:TOK,...p})}),j=await r.json();
+  if(j.erro=='sessao'&&a!='me'){sessionStorage.removeItem('gov_tok');alert('Sua sessão expirou. Entre novamente.');location.reload()}
+  return j}catch(e){return{ok:false,erro:'Sem conexão com o servidor.'}}}
+const navHtml=()=>TABS.map(([k,l])=>`<button data-t="${k}" class="${k==tab?'on':''}">${l}</button>`).join('');
+const vw=()=>VIEW?`<div class="vw"><span>Visualizando <b>${esc(VIEW.nome)}</b> — somente leitura</span><button data-back>Voltar à minha planilha</button></div>`:'';
+const hora=()=>new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),showLogin=()=>{$('lg').hidden=false;$('hd').hidden=true;$('app').hidden=true};
+function render(){
+ if(tab=='adm'){$('nav').innerHTML=navHtml();$('tgl').style.display='none';renderAdm();return}
+ renderMain();if(VIEW)$('app').insertAdjacentHTML('afterbegin',vw());
+ document.querySelectorAll('#app input,#app textarea,#un,#an').forEach(e=>e.readOnly=RO)}
+async function load(alvo){const j=await api('load',alvo?{alvo}:{});
+ if(!j.ok){alert(j.erro||'Não foi possível carregar os dados.');return false}
+ init(j.conteudo&&j.conteudo.l?j.conteudo:null);RO=!!alvo;document.body.classList.toggle('ro',RO);return true}
+async function enter(u){
+ ME={email:u.email,nome:u.nome||u.email,role:u.role};
+ if(!await load())return;
+ if(ME.role=='admin'&&!TABS.some(t=>t[0]=='adm'))TABS.push(['adm','Franquias']);
+ if(tab=='adm'&&ME.role!='admin'||!SH[tab]&&tab!='hl'&&tab!='adm')tab='dre';
+ $('who').textContent=ME.nome+(ME.role=='admin'?' · Admin':'');
+ $('lg').hidden=true;$('hd').hidden=false;$('app').hidden=false;render()}
+async function openFr(email,nm){if(email==ME.email)return backMine();if(await load(email)){VIEW={email,nome:nm};tab='dre';location.hash='dre';render()}}
+async function backMine(){if(await load()){VIEW=null;tab='adm';location.hash='adm';render()}}
+async function renderAdm(){
+ $('app').innerHTML=vw()+'<p style="color:var(--mu)">Carregando franquias…</p>';
+ const j=await api('painel');if(!j.ok){$('app').innerHTML=vw()+'<p>'+esc(j.erro||'Não foi possível carregar as franquias.')+'</p>';return}
+ const tot={rec:0,res:0,lap:0};
+ const rows=j.lista.map(p=>{const r=p.resumo||{};tot.rec+=r.rec||0;tot.res+=r.res||0;tot.lap+=r.lap||0;
+  const up=p.atualizado?new Date(p.atualizado).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}):'–';
+  return `<tr><th>${esc(p.nome||p.email)}${p.role=='admin'?'<em class="au">admin</em>':''}</th><td class="c">${fmt(r.rec,'$')}</td><td class="c${r.res<0?' neg':''}">${fmt(r.res,'$')}</td><td class="c">${fmt(r.luc,'%')}</td><td class="c">${fmt(r.lap,'$')}</td><td class="c">${up}</td><td><button class="add" data-open="${esc(p.email)}" data-nm="${esc(p.nome||p.email)}">Abrir</button></td></tr>`}).join('');
+ $('app').innerHTML=vw()+`<div class="ac" style="margin:0 0 12px"><button id="rf">Atualizar</button></div>
+ <div class="w"><table style="min-width:900px"><thead><tr><th>Franquia</th><th>Receita no ano</th><th>Resultado</th><th>Lucratividade</th><th>Lucro após invest.</th><th>Atualizado em</th><th></th></tr></thead>
+ <tbody>${rows}<tr class="t"><th>TOTAL — todas as franquias</th><td class="c">${fmt(tot.rec,'$')}</td><td class="c${tot.res<0?' neg':''}">${fmt(tot.res,'$')}</td><td class="c">${fmt(tot.rec?tot.res/tot.rec:0,'%')}</td><td class="c">${fmt(tot.lap,'$')}</td><td></td><td></td></tr></tbody></table></div>`;
+ $('rf').onclick=()=>renderAdm()}
 
-let saved=null;try{saved=JSON.parse(localStorage.getItem(KEY))}catch(e){}
-init(saved);if(!SH[tab]&&tab!='hl')tab='dre';render();
+/* ---------- entrada ---------- */
+async function start(){
+ if(!API_URL){showLogin();$('lgm').textContent='Configure API_URL no início do script.';return}
+ if(TOK){const j=await api('me');if(j.ok){enter(j);return}TOK=null;sessionStorage.removeItem('gov_tok')}
+ showLogin()}
+$('lgf').onsubmit=async e=>{e.preventDefault();const m=$('lgm'),b=$('lgf').querySelector('button');m.textContent='';b.disabled=true;b.textContent='Entrando…';
+ const j=await api('login',{email:$('lge').value.trim(),senha:$('lgp').value});b.disabled=false;b.textContent='Entrar';
+ if(!j.ok){m.textContent=j.erro||'Não foi possível entrar.';return}
+ TOK=j.token;sessionStorage.setItem('gov_tok',TOK);$('lgp').value='';enter(j)};
+$('out').onclick=async()=>{await api('logout');sessionStorage.removeItem('gov_tok');location.reload()};
+$('pw').onclick=async()=>{const p=prompt('Nova senha (mínimo 6 caracteres):');if(!p)return;const j=await api('senha',{nova:p});alert(j.ok?'Senha alterada.':'Não foi possível trocar a senha: '+(j.erro||''))};
+start();
 </script>
 </body>
 </html>

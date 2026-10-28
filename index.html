@@ -299,7 +299,7 @@ async function api(a,p={}){
    const form=document.createElement('form');form.method='POST';form.action=API_URL;form.target='api-bridge';form.style.display='none';
    const input=document.createElement('input');input.name='payload';input.value=JSON.stringify({a,t:TOK,requestId,...p});form.appendChild(input);document.body.appendChild(form);
    form.submit();form.remove();
-   setTimeout(()=>{if(API_PENDING.has(requestId)){API_PENDING.delete(requestId);resolve({ok:false,erro:'Sem resposta do servidor. Confira a implantação do Apps Script e a URL /exec.'});}},20000);
+   setTimeout(()=>{if(API_PENDING.has(requestId)){API_PENDING.delete(requestId);resolve({ok:false,erro:'O Apps Script não devolveu resposta. Atualize a implantação do Code.gs e confirme a URL /exec dessa mesma implantação.'});}},20000);
  });
 }
 const navHtml=()=>TABS.map(([k,l])=>`<button data-t="${k}" class="${k==tab?'on':''}">${l}</button>`).join('');

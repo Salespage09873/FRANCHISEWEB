@@ -135,7 +135,7 @@ pmk:"Material Didático|Material de Mídia Geral|Outdoor|Material de Escritório
 pma:"Pintura e Material|Material de Limpeza|Material de Cozinha|Materiais Elétricos|Materiais de Obra|Pedreiro|Equipe de limpeza|Eletricista|Jardim|Ar Condicionado + Instalação|Alarme + Instalação|Bebedouro|Calhas/PVC|Vidros|Portão|Segurança|Caçamba|Chaves|Extintor de Incêndio|Materiais Banheiro|Reforma (drywall)|Outros"};
 const G={rec:'Receitas',fix:'Despesas fixas',adm:'Administrativas variáveis',mkt:'Marketing',man:'Manutenção',imp:'Impostos e taxas municipais',via:'Viagens',ban:'Bancárias',div:'Diversas',das:'Impostos mensais (DAS etc.)',com:'Comissões',fun:'Funcionários CLT',pro:'Professores CLT',enc:'Encargos sociais compulsórios',out:'Outras despesas de pessoal',imo:'Imobilizado',pqv:'Bens de pequeno valor',est:'Estoques',ptx:'Taxas',pmk:'Marketing/Apoio',pma:'Manutenção/Obras'};
 const XK=['inat','tm','ta','des','frm','mat','aa','ap','lead','il','ic','tur','bon','bol','ativ0','saldo','fxJan'];
-const ROY=.06,API_URL='https://script.google.com/macros/s/AKfycbxu48BUHsLO5qXblwrw0whHgLSX2rpsxIrp16VpULSF7G7Q7AXAjzOPcwd5I34dOuYr/exec';
+const ROY=.06,API_URL='https://script.google.com/macros/s/AKfycbxM5sd33XLKVA_QwEAsubW3J-aIVBy1PPaffXOm3zhSV8d1J8Lijo2wwUjpgt35oXNi/exec';
 /* ROY = % de royalties | API_URL = endereço do app da web do Google Apps Script (termina em /exec) */
 const AUTO=(id,n)=>{n=n.trim();return id=='adm'&&/^royalt/i.test(n)?'roy':id=='enc'?(/d[eé]cimo/i.test(n)?'dec':/f[eé]rias/i.test(n)?'fer':/multa/i.test(n)?'mul':''):''};
 let ME,VIEW=null,RO=false,dirty=false,TOK=sessionStorage.getItem('gov_tok'),sv=0,again=false,D,S,tab=location.hash.slice(1)||'dre',tm;

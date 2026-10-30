@@ -135,11 +135,9 @@ pmk:"Material Didático|Material de Mídia Geral|Outdoor|Material de Escritório
 pma:"Pintura e Material|Material de Limpeza|Material de Cozinha|Materiais Elétricos|Materiais de Obra|Pedreiro|Equipe de limpeza|Eletricista|Jardim|Ar Condicionado + Instalação|Alarme + Instalação|Bebedouro|Calhas/PVC|Vidros|Portão|Segurança|Caçamba|Chaves|Extintor de Incêndio|Materiais Banheiro|Reforma (drywall)|Outros"};
 const G={rec:'Receitas',fix:'Despesas fixas',adm:'Administrativas variáveis',mkt:'Marketing',man:'Manutenção',imp:'Impostos e taxas municipais',via:'Viagens',ban:'Bancárias',div:'Diversas',das:'Impostos mensais (DAS etc.)',com:'Comissões',fun:'Funcionários CLT',pro:'Professores CLT',enc:'Encargos sociais compulsórios',out:'Outras despesas de pessoal',imo:'Imobilizado',pqv:'Bens de pequeno valor',est:'Estoques',ptx:'Taxas',pmk:'Marketing/Apoio',pma:'Manutenção/Obras'};
 const XK=['inat','tm','ta','des','frm','mat','aa','ap','lead','il','ic','tur','bon','bol','ativ0','saldo','fxJan'];
-const ROY=.06,API_URL='https://script.google.com/macros/s/AKfycbxu48BUHsLO5qXblwrw0whHgLSX2rpsxIrp16VpULSF7G7Q7AXAjzOPcwd5I34dOuYr/exec';
+const ROY=.06,API_URL='https://script.google.com/macros/s/AKfycbxM5sd33XLKVA_QwEAsubW3J-aIVBy1PPaffXOm3zhSV8d1J8Lijo2wwUjpgt35oXNi/exec';
 /* ROY = % de royalties | API_URL = endereço do app da web do Google Apps Script (termina em /exec) */
 const AUTO=(id,n)=>{n=n.trim();return id=='adm'&&/^royalt/i.test(n)?'roy':id=='enc'?(/d[eé]cimo/i.test(n)?'dec':/f[eé]rias/i.test(n)?'fer':/multa/i.test(n)?'mul':''):''};
-// Segurança: toda atualização exige novo login. Não reutiliza token da sessão anterior.
-sessionStorage.removeItem('gov_tok');
 let ME,VIEW=null,RO=false,dirty=false,TOK=null,sv=0,again=false,D,S,tab=location.hash.slice(1)||'dre',tm;
 
 /* ---------- estado ---------- */
@@ -337,15 +335,17 @@ async function renderAdm(){
 
 /* ---------- entrada ---------- */
 async function start(){
- if(!API_URL){showLogin();$('lgm').textContent='Configure API_URL no início do script.';return}
- // Nunca tenta restaurar uma sessão automaticamente após carregar/recarregar a página.
+ // Segurança: nenhuma sessão é restaurada ao recarregar ou abrir o site.
+ // O token só existe em memória depois de um login explícito.
  TOK=null;
- showLogin()}
+ showLogin();
+ if(!API_URL)$('lgm').textContent='Configure API_URL no início do script.';
+}
 $('lgf').onsubmit=async e=>{e.preventDefault();const m=$('lgm'),b=$('lgf').querySelector('button');m.textContent='';b.disabled=true;b.textContent='Entrando…';
  const j=await api('login',{email:$('lge').value.trim(),senha:$('lgp').value});b.disabled=false;b.textContent='Entrar';
  if(!j.ok){m.textContent=j.erro||'Não foi possível entrar.';return}
- TOK=j.token;sessionStorage.setItem('gov_tok',TOK);$('lgp').value='';enter(j)};
-$('out').onclick=async()=>{await api('logout');sessionStorage.removeItem('gov_tok');location.reload()};
+ TOK=j.token;$('lgp').value='';enter(j)};
+$('out').onclick=async()=>{await api('logout');TOK=null;location.reload()};
 $('pw').onclick=async()=>{const p=prompt('Nova senha (mínimo 6 caracteres):');if(!p)return;const j=await api('senha',{nova:p});alert(j.ok?'Senha alterada.':'Não foi possível trocar a senha: '+(j.erro||''))};
 start();
 </script>

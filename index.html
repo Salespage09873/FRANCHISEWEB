@@ -135,10 +135,12 @@ pmk:"Material Didático|Material de Mídia Geral|Outdoor|Material de Escritório
 pma:"Pintura e Material|Material de Limpeza|Material de Cozinha|Materiais Elétricos|Materiais de Obra|Pedreiro|Equipe de limpeza|Eletricista|Jardim|Ar Condicionado + Instalação|Alarme + Instalação|Bebedouro|Calhas/PVC|Vidros|Portão|Segurança|Caçamba|Chaves|Extintor de Incêndio|Materiais Banheiro|Reforma (drywall)|Outros"};
 const G={rec:'Receitas',fix:'Despesas fixas',adm:'Administrativas variáveis',mkt:'Marketing',man:'Manutenção',imp:'Impostos e taxas municipais',via:'Viagens',ban:'Bancárias',div:'Diversas',das:'Impostos mensais (DAS etc.)',com:'Comissões',fun:'Funcionários CLT',pro:'Professores CLT',enc:'Encargos sociais compulsórios',out:'Outras despesas de pessoal',imo:'Imobilizado',pqv:'Bens de pequeno valor',est:'Estoques',ptx:'Taxas',pmk:'Marketing/Apoio',pma:'Manutenção/Obras'};
 const XK=['inat','tm','ta','des','frm','mat','aa','ap','lead','il','ic','tur','bon','bol','ativ0','saldo','fxJan'];
-const ROY=.06,API_URL='https://script.google.com/macros/s/AKfycbxM5sd33XLKVA_QwEAsubW3J-aIVBy1PPaffXOm3zhSV8d1J8Lijo2wwUjpgt35oXNi/exec';
+const ROY=.06,API_URL='https://script.google.com/macros/s/AKfycbxu48BUHsLO5qXblwrw0whHgLSX2rpsxIrp16VpULSF7G7Q7AXAjzOPcwd5I34dOuYr/exec';
 /* ROY = % de royalties | API_URL = endereço do app da web do Google Apps Script (termina em /exec) */
 const AUTO=(id,n)=>{n=n.trim();return id=='adm'&&/^royalt/i.test(n)?'roy':id=='enc'?(/d[eé]cimo/i.test(n)?'dec':/f[eé]rias/i.test(n)?'fer':/multa/i.test(n)?'mul':''):''};
-let ME,VIEW=null,RO=false,dirty=false,TOK=sessionStorage.getItem('gov_tok'),sv=0,again=false,D,S,tab=location.hash.slice(1)||'dre',tm;
+// Segurança: toda atualização exige novo login. Não reutiliza token da sessão anterior.
+sessionStorage.removeItem('gov_tok');
+let ME,VIEW=null,RO=false,dirty=false,TOK=null,sv=0,again=false,D,S,tab=location.hash.slice(1)||'dre',tm;
 
 /* ---------- estado ---------- */
 function init(o){D=o||{};D.l=D.l||{};for(const id in N)D.l[id]=D.l[id]||N[id].split('|').map(n=>({n,v:Array(12).fill('')}));
@@ -299,7 +301,7 @@ async function api(a,p={}){
    const form=document.createElement('form');form.method='POST';form.action=API_URL;form.target='api-bridge';form.style.display='none';
    const input=document.createElement('input');input.name='payload';input.value=JSON.stringify({a,t:TOK,requestId,...p});form.appendChild(input);document.body.appendChild(form);
    form.submit();form.remove();
-   setTimeout(()=>{if(API_PENDING.has(requestId)){API_PENDING.delete(requestId);resolve({ok:false,erro:'O Apps Script não devolveu resposta. Atualize a implantação do Code.gs e confirme a URL /exec dessa mesma implantação.'});}},20000);
+   setTimeout(()=>{if(API_PENDING.has(requestId)){API_PENDING.delete(requestId);resolve({ok:false,erro:'Sem resposta do servidor. Confira a implantação do Apps Script e a URL /exec.'});}},20000);
  });
 }
 const navHtml=()=>TABS.map(([k,l])=>`<button data-t="${k}" class="${k==tab?'on':''}">${l}</button>`).join('');
@@ -336,7 +338,8 @@ async function renderAdm(){
 /* ---------- entrada ---------- */
 async function start(){
  if(!API_URL){showLogin();$('lgm').textContent='Configure API_URL no início do script.';return}
- if(TOK){const j=await api('me');if(j.ok){enter(j);return}TOK=null;sessionStorage.removeItem('gov_tok')}
+ // Nunca tenta restaurar uma sessão automaticamente após carregar/recarregar a página.
+ TOK=null;
  showLogin()}
 $('lgf').onsubmit=async e=>{e.preventDefault();const m=$('lgm'),b=$('lgf').querySelector('button');m.textContent='';b.disabled=true;b.textContent='Entrando…';
  const j=await api('login',{email:$('lge').value.trim(),senha:$('lgp').value});b.disabled=false;b.textContent='Entrar';
